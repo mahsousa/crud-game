@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-export default function Form() {
+export default function FormMoedas() {
   const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>(
     ""
   );
@@ -33,34 +33,10 @@ export default function Form() {
   return (
         <div className="w-full max-w-lg">
           <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
-            Cadastrar um item na Loja
+            Cadastrar Moedas na Loja
           </h2>
 
           <form className="mt-10 space-y-6" action="#" method="POST">
-            <div>
-              <label
-                htmlFor="select"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Selecione o tipo
-              </label>
-              <div className="mt-2">
-                <select
-                  id="select"
-                  name="select"
-                  autoComplete="select"
-                  required
-                  className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-select"
-                >
-                  <option value="">Selecione uma opção</option>
-                  <option value="option1">Avatar</option>
-                  <option value="option2">Tabuleiro</option>
-                  <option value="option3">Finalização</option>
-                  <option value="option4">Ficha</option>
-                </select>
-              </div>
-            </div>
-
             <div>
               <label
                 htmlFor="text"
@@ -82,24 +58,20 @@ export default function Form() {
 
             <div>
               <label
-                htmlFor="select"
+                htmlFor="number"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Categoria
+                Preço
               </label>
               <div className="mt-2">
-                <select
-                  id="select"
-                  name="select"
-                  autoComplete="select"
+                <input
+                  id="number"
+                  name="number"
+                  type="number"
+                  autoComplete="number"
                   required
-                  className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-select"
-                >
-                  <option value="">Selecione uma Categoria</option>
-                  <option value="option1">Natal</option>
-                  <option value="option2">Carnaval</option>
-                  <option value="option3">HalloWeen</option>
-                </select>
+                  className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-input"
+                />
               </div>
             </div>
 
@@ -108,7 +80,7 @@ export default function Form() {
                 htmlFor="number"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Preço
+                Quantidade de Moedas
               </label>
               <div className="mt-2">
                 <input

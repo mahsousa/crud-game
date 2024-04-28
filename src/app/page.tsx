@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <BaseLayout>
       <Sidebar />
-      <div>Home-page</div>
+      BEM VINDO
     </BaseLayout>
   );
 }
