@@ -1,10 +1,22 @@
 import BaseLayout from "@/components/BaseLayout";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import Categoria from "@/components/FormCategoria";
+import { useRouter } from "next/router";
 
-export default function createCategory() {
-  const saveCategory = (categoryName: string, categoryID: string) => {
-    const apiUrl = "https://localhost:44371/api/categoria";
+const EditarCategoriaPage = () => {
+  const router = useRouter();
+  const { id } = router.query; // Acessa o parâmetro 'id' da URL
+
+  //caso em que 'id' ainda não está disponível
+  if (!id) {
+    return <p>Carregando...</p>;
+  }
+
+  const categoriaId = Array.isArray(id) ? id[0] : id;
+
+
+  const saveCategory = (categoryName : string, categoryID : string) => {
+    const apiUrl = "https://localhost:44371/api/categoria/" + categoryID;
     const jsonData = {
       name: categoryName,
     };
@@ -12,7 +24,7 @@ export default function createCategory() {
     console.log(JSON.stringify(jsonData));
 
     fetch(apiUrl, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -33,13 +45,15 @@ export default function createCategory() {
 
   return (
     <BaseLayout>
-      <Sidebar />
-      <div className="w-100 bg-white p-20 min-h-screen">
+        <Sidebar />
+        <div className="w-100 bg-white p-20 min-h-screen">
         <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
-          Cadastrar Categorias da Loja
+          Editar Categorias da Loja
         </h2>
-        <Categoria saveCategory={saveCategory} categoryID="0" />
-      </div>
+        <Categoria saveCategory={saveCategory} categoryID={categoriaId} />
+        </div>
     </BaseLayout>
   );
 }
+
+export default EditarCategoriaPage;

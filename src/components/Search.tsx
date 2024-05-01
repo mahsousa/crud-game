@@ -1,15 +1,29 @@
-import React, { useState } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 
-export default function Search() {
+interface searchProps {
+  onClickSearch: (searchText: string) => void;
+}
+
+const Search: React.FC<searchProps> = ({ onClickSearch}) => {
+  const [searchText, setSearchText] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+  };
+
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onClickSearch(searchText);
+  };
+
   return (
     <div>
-      <form className="mx-auto">
+      <form className="mx-auto" onSubmit={handleFormSubmit}>
         <div className="flex relative">
           <button
             id="dropdown-button"
@@ -89,6 +103,7 @@ export default function Search() {
             border-white dark:border-gray-300 focus:dark:border-gray-300 dark:focus:ring-gray-300"
               placeholder="Pesquisar"
               required
+              onChange={handleSearchTextChange}
             />
             <button
               type="submit"
@@ -117,3 +132,4 @@ export default function Search() {
     </div>
   );
 }
+export default Search;
