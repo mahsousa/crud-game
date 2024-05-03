@@ -28,11 +28,11 @@ const sidebarItems: SidebarItem[] = [
     subItems: [
       {
         name: "CADASTRAR",
-        href: "/cadastrar",
+        href: "/cadastrar-produtos",
       },
       {
         name: "CONSULTAR",
-        href: "/listar",
+        href: "/listar-produtos",
       },
     ],
   },

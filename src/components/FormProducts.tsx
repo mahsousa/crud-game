@@ -1,28 +1,44 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from "react";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-export default function Form() {
-  const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>("");
+interface FormProductsProps {
+  saveProducts: (
+    nameItem: string,
+    tipo: string,
+    category: string,
+    price: string,
+    productID: string
+  ) => void;
+  productID: string;
+}
+
+const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID }) => {
+  const [nameItem, setNameItem] = useState("");
+  const [tipo, setTipo] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        if (e.target?.result) {
+        if (e.target && e.target.result) {
           setImagePreview(e.target.result);
         }
       };
       reader.readAsDataURL(file);
     } else {
-      setImagePreview("");
+      setImagePreview(null);
     }
   };
 
   const removeImage = () => {
-    setImagePreview("");
+    setImagePreview(null);
     const fileInput = document.getElementById("photo") as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
@@ -31,45 +47,44 @@ export default function Form() {
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
 
-    const nomeItem = formData.get("text") as string;
-    const tipo = formData.get("select") as string;
-    const categoria = formData.get("select-categoria") as string;
-    const preco = parseFloat(formData.get("number") as string);
-
-    // Exemplo de console.log dos dados do formulário
-    console.log("Nome do Item:", nomeItem);
-    console.log("Tipo:", tipo);
-    console.log("Categoria:", categoria);
-    console.log("Preço:", preco);
-
-    if (!nomeItem || !tipo || !categoria || isNaN(preco)) {
-      // Exibir popup de erro
+    // Verificar se todos os campos necessários estão preenchidos
+    if (!nameItem || !tipo || !category || !price) {
       setShowErrorPopup(true);
-    } else {
-      // Exibir popup de sucesso
-      setShowSuccessPopup(true);
+      return;
+    }
 
-      // Ocultar os popups após 3 segundos
-      setTimeout(() => {
-        setShowSuccessPopup(false);
-        setShowErrorPopup(false);
-      }, 3000);
+    // Chama a função saveProducts com os valores do formulário
+    saveProducts(nameItem, tipo, category, price, productID);
 
-      // Limpar o formulário após o envio (opcional)
-      event.currentTarget.reset();
-      setImagePreview("");
+    // Limpar os campos após o envio bem-sucedido
+    setNameItem("");
+    setTipo("");
+    setCategory("");
+    setPrice("");
+    setImagePreview(null);
+    setShowSuccessPopup(true);
+
+    // Limpar o formulário
+    if (formRef.current) {
+      formRef.current.reset();
     }
   };
 
+  // Efeito para fechar o popup de sucesso após 3 segundos
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showSuccessPopup) {
+      timer = setTimeout(() => {
+        setShowSuccessPopup(false);
+      }, 3000); // Tempo em milissegundos para o popup desaparecer (3 segundos)
+    }
+    return () => clearTimeout(timer);
+  }, [showSuccessPopup]);
+
   return (
     <div className="w-full max-w-lg">
-      <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
-        Cadastrar um item na Loja
-      </h2>
-
-      <form className="mt-10 space-y-6" onSubmit={handleFormSubmit}>
+      <form ref={formRef} className="mt-10 space-y-6" onSubmit={handleFormSubmit}>
         <div>
           <label htmlFor="select" className="block text-sm font-medium leading-6 text-gray-900">
             Selecione o tipo
@@ -80,13 +95,15 @@ export default function Form() {
               name="select"
               autoComplete="select"
               required
-              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-select"
+              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder-text-gray-400 focus-ring-2 focus-ring-inset focus-ring-indigo-600 sm-text-sm sm-leading-6 form-select"
+              value={tipo}
+              onChange={(e) => setTipo(e.target.value)}
             >
               <option value="">Selecione uma opção</option>
-              <option value="option1">Avatar</option>
-              <option value="option2">Tabuleiro</option>
-              <option value="option3">Finalização</option>
-              <option value="option4">Ficha</option>
+              <option value="0">Avatar</option>
+              <option value="2">Tabuleiro</option>
+              <option value="1">Finalização</option>
+              <option value="3">Ficha</option>
             </select>
           </div>
         </div>
@@ -102,7 +119,9 @@ export default function Form() {
               type="text"
               autoComplete="text"
               required
-              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-input"
+              value={nameItem}
+              onChange={(e) => setNameItem(e.target.value)}
+              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder-text-gray-400 focus-ring-2 focus-ring-inset focus-ring-indigo-600 sm-text-sm sm-leading-6 form-input"
             />
           </div>
         </div>
@@ -117,12 +136,14 @@ export default function Form() {
               name="select-categoria"
               autoComplete="select-categoria"
               required
-              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-select"
+              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder-text-gray-400 focus-ring-2 focus-ring-inset focus-ring-indigo-600 sm-text-sm sm-leading-6 form-select"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">Selecione uma Categoria</option>
-              <option value="Natal">Natal</option>
-              <option value="Carnaval">Carnaval</option>
-              <option value="Halloween">Halloween</option>
+              <option value="5">Natal</option>
+              <option value="6">Carnaval</option>
+              <option value="7">Halloween</option>
             </select>
           </div>
         </div>
@@ -138,13 +159,14 @@ export default function Form() {
               type="number"
               autoComplete="number"
               required
-              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-input"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder-text-gray-400 focus-ring-2 focus-ring-inset focus-ring-indigo-600 sm-text-sm sm-leading-6 form-input"
             />
           </div>
         </div>
 
         <div className="flex justify-around">
-          {/* Photo Upload */}
           <div className="gap-x-3">
             <div className="mt-2 gap-x-3">
               <PhotoIcon className="h-15 w-15 text-gray-300" aria-hidden="true" />
@@ -157,14 +179,13 @@ export default function Form() {
               />
               <label
                 htmlFor="photo"
-                className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer"
+                className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50 cursor-pointer"
               >
                 Imagem
               </label>
             </div>
           </div>
 
-          {/* Image Preview */}
           <div className="flex items-center mt-2 relative">
             {imagePreview && typeof imagePreview === "string" && (
               <img
@@ -177,7 +198,7 @@ export default function Form() {
               <button
                 type="button"
                 onClick={removeImage}
-                className="absolute top-0 right-0 rounded-full bg-white p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                className="absolute top-0 right-0 rounded-full bg-white p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover-bg-gray-50"
               >
                 <XMarkIcon className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -195,7 +216,7 @@ export default function Form() {
         </div>
       </form>
 
-      {/* Popup de Sucesso */}
+      {/* Popup de sucesso */}
       {showSuccessPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
           <div className="bg-white p-5 rounded-md shadow-lg">
@@ -204,7 +225,7 @@ export default function Form() {
         </div>
       )}
 
-      {/* Popup de Erro */}
+      {/* Popup de erro */}
       {showErrorPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
           <div className="bg-white p-5 rounded-md shadow-lg">
@@ -214,4 +235,6 @@ export default function Form() {
       )}
     </div>
   );
-}
+};
+
+export default FormProducts;

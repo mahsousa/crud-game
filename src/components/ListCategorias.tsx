@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 interface Categoria {
   id: number;
   name: string;
-  items: Categoria[] | null; // Você pode ajustar 'any[]' para o tipo correto dos itens da categoria
+  items: Categoria[] | null; 
 }
 
 interface ListCategoriasProps {
@@ -31,11 +31,11 @@ const ListCategorias: React.FC<ListCategoriasProps> = ({ listCategory }) => {
     setCategoriaToDelete(id); // Define a categoria a ser deletada
   };
 
-  const handleCancelarDelecao = () => {
+  const handleCancelarDelete = () => {
     setCategoriaToDelete(null); // Limpa a categoria a ser deletada
   };
 
-  const handleConfirmarDelecao = async () => {
+  const handleConfirmarDelete = async () => {
     if (categoriaToDelete !== null) {
       try {
         const response = await fetch(`https://localhost:44371/api/categoria/${categoriaToDelete}`, {
@@ -97,13 +97,13 @@ const ListCategorias: React.FC<ListCategoriasProps> = ({ listCategory }) => {
             <div className="flex justify-end">
               <button
                 className="px-4 py-2 text-sm text-white bg-red-500 rounded hover:bg-red-600 mr-4"
-                onClick={handleConfirmarDelecao}
+                onClick={handleConfirmarDelete}
               >
                 Confirmar
               </button>
               <button
                 className="px-4 py-2 text-sm text-gray-600 bg-gray-200 rounded hover:bg-gray-300"
-                onClick={handleCancelarDelecao}
+                onClick={handleCancelarDelete}
               >
                 Cancelar
               </button>

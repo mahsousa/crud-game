@@ -6,7 +6,7 @@ interface FormCategoryProps {
 }
 
 
-const FormMoedas: React.FC<FormCategoryProps> = ({ saveCategory, categoryID }) => {
+const FormCategory: React.FC<FormCategoryProps> = ({ saveCategory, categoryID }) => {
   const [categoria, setCategoria] = useState("");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
@@ -93,4 +93,4 @@ const FormMoedas: React.FC<FormCategoryProps> = ({ saveCategory, categoryID }) =
   );
 }
 
-export default FormMoedas;
+export default FormCategory;
