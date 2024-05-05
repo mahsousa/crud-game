@@ -10,16 +10,24 @@ interface FormProductsProps {
     productID: string
   ) => void;
   productID: string;
+  initialProduct : Product | null;
 }
 
-const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID }) => {
-  const [nameItem, setNameItem] = useState("");
-  const [tipo, setTipo] = useState("");
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState("");
+export interface Product {
+  id: string,
+  name: string,
+  price: string,
+  image: string,
+  tipo: string,
+  idCategoria: string
+}
+
+const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID, initialProduct }) => {
+  const [nameItem, setNameItem] = useState(initialProduct ? initialProduct.name : "");
+  const [tipo, setTipo] = useState(initialProduct ? initialProduct.tipo : "");
+  const [category, setCategory] = useState(initialProduct ? initialProduct.idCategoria : "");
+  const [price, setPrice] = useState(initialProduct ? initialProduct.price : "");
   const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>(null);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [showErrorPopup, setShowErrorPopup] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +58,6 @@ const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID }) 
 
     // Verificar se todos os campos necessários estão preenchidos
     if (!nameItem || !tipo || !category || !price) {
-      setShowErrorPopup(true);
       return;
     }
 
@@ -63,25 +70,13 @@ const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID }) 
     setCategory("");
     setPrice("");
     setImagePreview(null);
-    setShowSuccessPopup(true);
 
     // Limpar o formulário
     if (formRef.current) {
       formRef.current.reset();
     }
   };
-
-  // Efeito para fechar o popup de sucesso após 3 segundos
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (showSuccessPopup) {
-      timer = setTimeout(() => {
-        setShowSuccessPopup(false);
-      }, 3000); // Tempo em milissegundos para o popup desaparecer (3 segundos)
-    }
-    return () => clearTimeout(timer);
-  }, [showSuccessPopup]);
-
+  
   return (
     <div className="w-full max-w-lg">
       <form ref={formRef} className="mt-10 space-y-6" onSubmit={handleFormSubmit}>
@@ -215,24 +210,6 @@ const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID }) 
           </button>
         </div>
       </form>
-
-      {/* Popup de sucesso */}
-      {showSuccessPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white p-5 rounded-md shadow-lg">
-            Cadastro realizado com sucesso!
-          </div>
-        </div>
-      )}
-
-      {/* Popup de erro */}
-      {showErrorPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white p-5 rounded-md shadow-lg">
-            Por favor, preencha todos os campos corretamente.
-          </div>
-        </div>
-      )}
     </div>
   );
 };

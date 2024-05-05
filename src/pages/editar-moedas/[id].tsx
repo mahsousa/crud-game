@@ -70,23 +70,23 @@ const EditarMoedasPage = () => {
       })
       .then((data) => {
         // Mostrar popup de sucesso
-      setShowSuccessPopup(true);
+        setShowSuccessPopup(true);
 
-      // Limpar popup após alguns segundos
-      setTimeout(() => {
-        setShowSuccessPopup(false);
-      }, 3000); // Fechar o popup após 3 segundos
+        // Limpar popup após alguns segundos
+        setTimeout(() => {
+          setShowSuccessPopup(false);
+        }, 3000); // Fechar o popup após 3 segundos
       })
       .catch((error) => {
         console.error('Erro ao realizar a atualização:', error);
 
-      // Mostrar popup de erro
-      setShowErrorPopup(true);
+        // Mostrar popup de erro
+        setShowErrorPopup(true);
 
-      // Limpar popup após alguns segundos
-      setTimeout(() => {
-        setShowErrorPopup(false);
-      }, 3000); // Fechar o popup após 3 segundos
+        // Limpar popup após alguns segundos
+        setTimeout(() => {
+          setShowErrorPopup(false);
+        }, 3000); // Fechar o popup após 3 segundos
       });
   };
 
@@ -105,6 +105,7 @@ const EditarMoedasPage = () => {
         </h2>
         {/* Passa os detalhes da moeda como prop initialCoin para o componente FormMoedas */}
         <FormMoedas saveMoedas={saveMoedas} moedasID="0" initialCoin={moedas} />
+        
         {/* Popup de sucesso */}
         {showSuccessPopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">

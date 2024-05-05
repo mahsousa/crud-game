@@ -28,8 +28,6 @@ const FormMoedas: React.FC<FormMoedasProps> = ({
   const [price, setPrice] = useState(initialCoin ? initialCoin.price : "");
   const [qtdMoedas, setQtdMoedas] = useState(initialCoin ? initialCoin.qtdMoedas : "");
   const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>(null);
-  const [successPopup, setSuccessPopup] = useState(false);
-  const [errorPopup, setErrorPopup] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -60,7 +58,6 @@ const FormMoedas: React.FC<FormMoedasProps> = ({
 
     // Verificar se todos os campos necessários estão preenchidos
     if (!nameMoeda || !price || !qtdMoedas) {
-      setErrorPopup(true);
       return;
     }
 
@@ -72,24 +69,12 @@ const FormMoedas: React.FC<FormMoedasProps> = ({
     setPrice("");
     setQtdMoedas("");
     setImagePreview(null);
-    setSuccessPopup(true);
 
     // Limpar o formulário
     if (formRef.current) {
       formRef.current.reset();
     }
   };
-
-  // Efeito para fechar o popup de sucesso após 3 segundos
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (successPopup) {
-      timer = setTimeout(() => {
-        setSuccessPopup(false);
-      }, 3000); // Tempo em milissegundos para o popup desaparecer (3 segundos)
-    }
-    return () => clearTimeout(timer);
-  }, [successPopup]);
 
   return (
     <div className="w-full max-w-lg">
