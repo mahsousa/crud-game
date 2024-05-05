@@ -38,7 +38,7 @@ export default function createCategory() {
         <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
           Cadastrar Categorias da Loja
         </h2>
-        <Categoria saveCategory={saveCategory} categoryID="0" />
+        <Categoria saveCategory={saveCategory} categoryID="0" initialCategoryName={null} />
       </div>
     </BaseLayout>
   );

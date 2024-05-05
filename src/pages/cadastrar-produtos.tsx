@@ -16,7 +16,7 @@ export default function CadastrarProdutos() {
       idCategoria: parseInt(category, 10),
       price: price,
       image:
-        "https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/blt22c10eb03f058068/64d0c3bc674e985be248f4ca/80923_TFT_Set9_Championship_Announcement_Header.jpg",
+        "https://img.freepik.com/free-vector/gradient-no-photo-sign_23-2149303600.jpg",
     };
 
     console.log(JSON.stringify(jsonData));
@@ -48,7 +48,7 @@ export default function CadastrarProdutos() {
         <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
           Cadastrar um item na Loja
         </h2>
-        <Form saveProducts={saveProducts} productID="0" />
+        <Form saveProducts={saveProducts} productID="0" initialProduct={null}/>
       </div>
     </BaseLayout>
   );

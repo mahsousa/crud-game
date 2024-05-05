@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 interface Moedas {
   id: number;
-  nameMoeda: string,
+  name: string,
   price: string,
   qtdMoedas: string,
   moedasID: string
@@ -78,7 +78,7 @@ const ListMoedas: React.FC<ListMoedasProps> = ({ listMoedas }) => {
                   />
                   <div className="min-w-0 flex-auto">
                     <p className="text-sm font-semibold leading-6 text-darkpurple-600">
-                      {moedas.nameMoeda}
+                      {moedas.name}
                     </p>
                     <div className="flex gap-1">
                       <p className="mt-1 truncate text-xs leading-5">
