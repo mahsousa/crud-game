@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  ChangeEvent,
-  FormEvent,
-  useRef,
-  useEffect,
-} from "react";
+import React, {useState,ChangeEvent,FormEvent,useRef,useEffect,} from "react";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 interface FormMoedasProps {
@@ -25,13 +19,15 @@ interface Coin {
   id: string;
 }
 
-const FormMoedas: React.FC<FormMoedasProps> = ({ saveMoedas, moedasID, initialCoin}) => {
+const FormMoedas: React.FC<FormMoedasProps> = ({
+  saveMoedas,
+  moedasID,
+  initialCoin,
+}) => {
   const [nameMoeda, setNameMoeda] = useState(initialCoin ? initialCoin.name : "");
-  const [price, setPrice] = useState(initialCoin ? initialCoin.price: "");
+  const [price, setPrice] = useState(initialCoin ? initialCoin.price : "");
   const [qtdMoedas, setQtdMoedas] = useState(initialCoin ? initialCoin.qtdMoedas : "");
-  const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>(
-    null
-  );
+  const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>(null);
   const [successPopup, setSuccessPopup] = useState(false);
   const [errorPopup, setErrorPopup] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -215,24 +211,6 @@ const FormMoedas: React.FC<FormMoedasProps> = ({ saveMoedas, moedasID, initialCo
           </button>
         </div>
       </form>
-
-      {/* Popup de Sucesso */}
-      {successPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white p-5 rounded-md shadow-lg">
-            Cadastro realizado com sucesso!
-          </div>
-        </div>
-      )}
-
-      {/* Popup de Erro */}
-      {errorPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white p-5 rounded-md shadow-lg">
-            Por favor, preencha todos os campos corretamente.
-          </div>
-        </div>
-      )}
     </div>
   );
 };

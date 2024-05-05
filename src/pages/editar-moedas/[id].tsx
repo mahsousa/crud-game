@@ -15,7 +15,9 @@ interface Coin {
 const EditarMoedasPage = () => {
   const router = useRouter();
   const { id } = router.query as { id: string }; // Acessa o parâmetro 'id' da URL
-  
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+
   const [moedas, setMoedas] = useState<Coin | null>(null); // Estado para armazenar os detalhes da moeda
   
   // Função para buscar os detalhes da moeda pelo ID
@@ -67,10 +69,24 @@ const EditarMoedasPage = () => {
         }
       })
       .then((data) => {
-        console.log("PUT bem-sucedido:", data);
+        // Mostrar popup de sucesso
+      setShowSuccessPopup(true);
+
+      // Limpar popup após alguns segundos
+      setTimeout(() => {
+        setShowSuccessPopup(false);
+      }, 3000); // Fechar o popup após 3 segundos
       })
       .catch((error) => {
-        console.error("Erro ao realizar o PUT:", error);
+        console.error('Erro ao realizar a atualização:', error);
+
+      // Mostrar popup de erro
+      setShowErrorPopup(true);
+
+      // Limpar popup após alguns segundos
+      setTimeout(() => {
+        setShowErrorPopup(false);
+      }, 3000); // Fechar o popup após 3 segundos
       });
   };
 
@@ -89,6 +105,19 @@ const EditarMoedasPage = () => {
         </h2>
         {/* Passa os detalhes da moeda como prop initialCoin para o componente FormMoedas */}
         <FormMoedas saveMoedas={saveMoedas} moedasID="0" initialCoin={moedas} />
+        {/* Popup de sucesso */}
+        {showSuccessPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div className="bg-white p-5 rounded-md shadow-lg">Moedas editada com sucesso!</div>
+          </div>
+        )}
+
+        {/* Popup de erro */}
+        {showErrorPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div className="bg-white p-5 rounded-md shadow-lg">Erro ao editar Moedas. Por favor, tente novamente.</div>
+          </div>
+        )}
       </div>
     </BaseLayout>
   );
