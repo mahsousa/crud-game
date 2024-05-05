@@ -1,13 +1,13 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 
 interface FormCategoryProps {
-  categoryID : string;
-  saveCategory: (categoryName : string, categoryID : string) => void;
+  categoryID: string;
+  saveCategory: (categoryName: string, categoryID: string) => void;
+  initialCategoryName: string | null;
 }
 
-
-const FormCategory: React.FC<FormCategoryProps> = ({ saveCategory, categoryID }) => {
-  const [categoria, setCategoria] = useState("");
+const FormCategory: React.FC<FormCategoryProps> = ({ saveCategory, categoryID, initialCategoryName }) => {
+  const [categoria, setCategoria] = useState(initialCategoryName ?? "");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
 
@@ -22,8 +22,6 @@ const FormCategory: React.FC<FormCategoryProps> = ({ saveCategory, categoryID })
 
     saveCategory(categoria, categoryID);
   };
-
-  
 
   const handleCategoriaChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCategoria(event.target.value);
@@ -45,10 +43,7 @@ const FormCategory: React.FC<FormCategoryProps> = ({ saveCategory, categoryID })
     <div className="w-full max-w-lg">
       <form className="mt-10 space-y-6" onSubmit={handleFormSubmit}>
         <div>
-          <label
-            htmlFor="categoria"
-            className="block text-sm font-medium leading-6 text-gray-900"
-          >
+          <label htmlFor="categoria" className="block text-sm font-medium leading-6 text-gray-900">
             Nome Da Categoria
           </label>
           <div className="mt-2">
@@ -75,22 +70,18 @@ const FormCategory: React.FC<FormCategoryProps> = ({ saveCategory, categoryID })
       {/* Popup de Sucesso */}
       {showSuccessPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white p-5 rounded-md shadow-lg">
-            Cadastro realizado com sucesso!
-          </div>
+          <div className="bg-white p-5 rounded-md shadow-lg">Cadastro realizado com sucesso!</div>
         </div>
       )}
 
       {/* Popup de Erro */}
       {showErrorPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white p-5 rounded-md shadow-lg">
-            Por favor, preencha o campo corretamente.
-          </div>
+          <div className="bg-white p-5 rounded-md shadow-lg">Por favor, preencha o campo corretamente.</div>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default FormCategory;

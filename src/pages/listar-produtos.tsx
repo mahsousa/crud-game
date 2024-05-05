@@ -20,7 +20,7 @@ interface Categoria {
   items: Item[] | null;
 }
 
-export default function About() {
+export default function ListarProdutos() {
   const [products, setProducts] = useState<Item[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 

@@ -1,28 +1,58 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import React, {
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useRef,
+  useEffect,
+} from "react";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-export default function FormMoedas() {
-  const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>("");
+interface FormMoedasProps {
+  saveMoedas: (
+    name: string,
+    price: string,
+    qtdMoedas: string,
+    moedasID: string
+  ) => void;
+  moedasID: string;
+  initialCoin: Coin | null;
+}
+
+interface Coin {
+  name: string;
+  price: string;
+  qtdMoedas: string;
+  id: string;
+}
+
+const FormMoedas: React.FC<FormMoedasProps> = ({ saveMoedas, moedasID, initialCoin}) => {
+  const [nameMoeda, setNameMoeda] = useState(initialCoin ? initialCoin.name : "");
+  const [price, setPrice] = useState(initialCoin ? initialCoin.price: "");
+  const [qtdMoedas, setQtdMoedas] = useState(initialCoin ? initialCoin.qtdMoedas : "");
+  const [imagePreview, setImagePreview] = useState<string | null | ArrayBuffer>(
+    null
+  );
   const [successPopup, setSuccessPopup] = useState(false);
   const [errorPopup, setErrorPopup] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        if (e.target?.result) {
+        if (e.target && e.target.result) {
           setImagePreview(e.target.result);
         }
       };
       reader.readAsDataURL(file);
     } else {
-      setImagePreview("");
+      setImagePreview(null);
     }
   };
 
   const removeImage = () => {
-    setImagePreview("");
+    setImagePreview(null);
     const fileInput = document.getElementById("photo") as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
@@ -31,105 +61,114 @@ export default function FormMoedas() {
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
 
-    const nomeItem = formData.get("text") as string;
-    const preco = parseFloat(formData.get("preco") as string);
-    const quantidadeMoedas = parseInt(formData.get("quantidadeMoedas") as string);
-
-    if (!nomeItem || isNaN(preco) || isNaN(quantidadeMoedas)) {
+    // Verificar se todos os campos necessários estão preenchidos
+    if (!nameMoeda || !price || !qtdMoedas) {
       setErrorPopup(true);
-    } else {
-      const newItem = {
-        nomeItem,
-        preco,
-        quantidadeMoedas,
-        imagePreview: imagePreview as string,
-      };
+      return;
+    }
 
-      // Salvar no localStorage
-      const items = JSON.parse(localStorage.getItem("moedas") || "[]");
-      items.push(newItem);
-      localStorage.setItem("moedas", JSON.stringify(items));
+    // Chama a função saveMoedas com os valores do formulário
+    saveMoedas(nameMoeda, price, qtdMoedas, moedasID);
 
-      setSuccessPopup(true);
-      setTimeout(() => {
-        setSuccessPopup(false);
-        setErrorPopup(false);
-      }, 3000);
+    // Limpar os campos após o envio bem-sucedido
+    setNameMoeda("");
+    setPrice("");
+    setQtdMoedas("");
+    setImagePreview(null);
+    setSuccessPopup(true);
 
-      // Limpar o formulário após o envio
-      event.currentTarget.reset();
-      setImagePreview("");
-
-      // Exibir informações no console
-      console.log("Nome do Item:", nomeItem);
-      console.log("Preço:", preco);
-      console.log("Quantidade de Moedas:", quantidadeMoedas);
-      console.log("Imagem Preview:", imagePreview);
+    // Limpar o formulário
+    if (formRef.current) {
+      formRef.current.reset();
     }
   };
 
+  // Efeito para fechar o popup de sucesso após 3 segundos
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (successPopup) {
+      timer = setTimeout(() => {
+        setSuccessPopup(false);
+      }, 3000); // Tempo em milissegundos para o popup desaparecer (3 segundos)
+    }
+    return () => clearTimeout(timer);
+  }, [successPopup]);
+
   return (
     <div className="w-full max-w-lg">
-      <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
-        Cadastrar Moedas na Loja
-      </h2>
-
       <form className="mt-10 space-y-6" onSubmit={handleFormSubmit}>
         <div>
-          <label htmlFor="text" className="block text-sm font-medium leading-6 text-gray-900">
-            Nome do Item
+          <label
+            htmlFor="nameMoeda"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Nome da Moeda
           </label>
           <div className="mt-2">
             <input
-              id="text"
-              name="text"
+              id="nameMoeda"
+              name="nameMoeda"
               type="text"
               autoComplete="text"
               required
+              value={nameMoeda}
+              onChange={(e) => setNameMoeda(e.target.value)}
               className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-input"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="preco" className="block text-sm font-medium leading-6 text-gray-900">
+          <label
+            htmlFor="price"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
             Preço
           </label>
           <div className="mt-2">
             <input
-              id="preco"
-              name="preco"
+              id="price"
+              name="price"
               type="number"
               autoComplete="number"
               required
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-input"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="quantidadeMoedas" className="block text-sm font-medium leading-6 text-gray-900">
+          <label
+            htmlFor="qtdMoedas"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
             Quantidade de Moedas
           </label>
           <div className="mt-2">
             <input
-              id="quantidadeMoedas"
-              name="quantidadeMoedas"
+              id="qtdMoedas"
+              name="qtdMoedas"
               type="number"
               autoComplete="number"
               required
+              value={qtdMoedas}
+              onChange={(e) => setQtdMoedas(e.target.value)}
               className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-input"
             />
           </div>
         </div>
-        
+
         <div className="flex justify-around">
-          {/* Photo Upload */}
+          {/* Upload da Foto */}
           <div className="gap-x-3">
             <div className="mt-2 gap-x-3">
-              <PhotoIcon className="h-15 w-15 text-gray-300" aria-hidden="true" />
+              <PhotoIcon
+                className="h-15 w-15 text-gray-300"
+                aria-hidden="true"
+              />
               <input
                 id="photo"
                 name="photo"
@@ -146,12 +185,12 @@ export default function FormMoedas() {
             </div>
           </div>
 
-          {/* Image Preview */}
+          {/* Pré-visualização da Imagem */}
           <div className="flex items-center mt-2 relative">
             {imagePreview && typeof imagePreview === "string" && (
               <img
                 src={imagePreview}
-                alt="Preview da imagem"
+                alt="Pré-visualização da imagem"
                 className="h-40 w-40 rounded-md mr-2"
               />
             )}
@@ -170,7 +209,7 @@ export default function FormMoedas() {
         <div>
           <button
             type="submit"
-            className="w-full justify-center rounded-md bg-greenwhite-300 px-3 py-3 text-lg font-semibold leading-6 text-white shadow-sm"
+            className="w-full justify-center rounded-md bg-green-500 px-3 py-3 text-lg font-semibold leading-6 text-white shadow-sm"
           >
             Cadastrar
           </button>
@@ -196,4 +235,6 @@ export default function FormMoedas() {
       )}
     </div>
   );
-}
+};
+
+export default FormMoedas;
