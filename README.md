@@ -3,6 +3,8 @@ Para começar, execute o servidor de desenvolvimento:
 
 # RODAR OS COMANDOS NO TERMINAL
 
+npm install
+
 npm install react-icons
 
 npm install next@latest
