@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import ListCategorias from "@/components/ListCategorias";
 import Navegation from "@/components/Navegation";
 import Search from "@/components/Search";
+import CategoriaService from "@/services/category-service";
 
 interface Categoria {
   id: number;
@@ -11,34 +12,24 @@ interface Categoria {
   items: Categoria[] | null;
 }
 
-export default function About() {
+export default function ListarCategoria() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
-  const search = async (text: string) => {
-    try {
-      var response;
-      if(text && text.length > 0){
-       response = await fetch(`https://localhost:44371/api/categoria/search?name=${text}`);
-      }else{
-        response = await fetch(`https://localhost:44371/api/categoria/`);
-      }
-      
-      if (!response.ok) {
-        throw new Error("Falha ao buscar as categorias");
-      }
-      const data = await response.json();
-      if (data && data.categoria) {
-        setCategorias(data.categoria as Categoria[]);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar as categorias da API:", error);
-    }
-  };
+  const categoriaService = new CategoriaService();
 
   useEffect(() => {
-    search(searchText); // Chamada inicial ao carregar o componente e sempre que 'searchText' mudar
-  }, [searchText]); // Executa sempre que 'searchText' for alterado
+    const fetchData = async () => {
+      const result = await categoriaService.search(searchText);
+      setCategorias(result);
+    };
+
+    fetchData();
+  }, [searchText]);
+
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+  };
 
   return (
     <BaseLayout>

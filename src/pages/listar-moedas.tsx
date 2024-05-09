@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 
 interface Moedas {
   id: number;
-  nameMoeda: string;
+  name: string;
   price: string;
   qtdMoedas: string;
   moedasID: string;
@@ -54,7 +54,7 @@ export default function ListarMoedas() {
           Consultar Moedas da Loja
         </h2>
         <Search onClickSearch={setSearchText} />
-        <ListMoedas listMoedas={moedas} />
+        <ListMoedas listMoedas={moedas}/>
         <Navegation />
       </div>
     </BaseLayout>

@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from "react";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { Categoria } from "@/services/category-service";
 
 interface FormProductsProps {
   saveProducts: (
@@ -10,19 +11,26 @@ interface FormProductsProps {
     productID: string
   ) => void;
   productID: string;
-  initialProduct : Product | null;
+  initialProduct: Product | null;
+  categorias: Categoria[]; // Propriedade para receber as categorias
 }
 
 export interface Product {
-  id: string,
-  name: string,
-  price: string,
-  image: string,
-  tipo: string,
-  idCategoria: string
+  id: string;
+  name: string;
+  price: string;
+  image: string;
+  tipo: string;
+  idCategoria: string;
 }
 
-const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID, initialProduct }) => {
+
+const FormProducts: React.FC<FormProductsProps> = ({
+  saveProducts,
+  productID,
+  initialProduct,
+  categorias, // Recebe as categorias como propriedade
+}) => {
   const [nameItem, setNameItem] = useState(initialProduct ? initialProduct.name : "");
   const [tipo, setTipo] = useState(initialProduct ? initialProduct.tipo : "");
   const [category, setCategory] = useState(initialProduct ? initialProduct.idCategoria : "");
@@ -76,7 +84,7 @@ const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID, in
       formRef.current.reset();
     }
   };
-  
+
   return (
     <div className="w-full max-w-lg">
       <form ref={formRef} className="mt-10 space-y-6" onSubmit={handleFormSubmit}>
@@ -136,9 +144,11 @@ const FormProducts: React.FC<FormProductsProps> = ({ saveProducts, productID, in
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">Selecione uma Categoria</option>
-              <option value="5">Natal</option>
-              <option value="6">Carnaval</option>
-              <option value="7">Halloween</option>
+              {categorias && categorias.map((cat) => (
+                <option key={cat.id} value={cat.id.toString()}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
