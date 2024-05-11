@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-
-interface Categoria {
-  id: number;
-  name: string;
-  items: Categoria[] | null; 
-}
+import { Categoria } from "@/services/category-service";
 
 interface ListCategoriasProps {
   listCategory: Categoria[] | null;
@@ -55,6 +50,10 @@ const ListCategorias: React.FC<ListCategoriasProps> = ({ listCategory }) => {
     }
   };
 
+  const getDetailUrl = (idCategoria: number) => {
+    return "/categoria/" + idCategoria;
+  }
+
   return (
     <div className="container-fluid w-100 py-10">
       <div className="flex bg-white rounded-l-lg border-black">
@@ -64,10 +63,13 @@ const ListCategorias: React.FC<ListCategoriasProps> = ({ listCategory }) => {
               <li key={categoria.id} className="flex justify-between gap-x-6 py-5">
                 <div className="flex min-w-0 gap-x-4">
                   <div className="min-w-0 flex-auto">
-                    <p className="text-sm font-semibold leading-6 text-darkpurple-600">
-                      {categoria.name}
-                    </p>
+                    <a href={getDetailUrl(categoria.id)}>
+                      <p className="text-sm font-semibold leading-6 text-darkpurple-600">
+                        {categoria.name}
+                      </p>
+                    </a>
                   </div>
+
                 </div>
                 <div className="flex gap-x-6">
                   <button

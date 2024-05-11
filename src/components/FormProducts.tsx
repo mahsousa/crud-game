@@ -13,6 +13,8 @@ interface FormProductsProps {
   productID: string;
   initialProduct: Product | null;
   categorias: Categoria[]; // Propriedade para receber as categorias
+
+  hideCategorySelect: boolean; // Esconder a select de categorias (usado quando se cadastra um produto a partir da tela de cadastro de Categoria)
 }
 
 export interface Product {
@@ -30,6 +32,7 @@ const FormProducts: React.FC<FormProductsProps> = ({
   productID,
   initialProduct,
   categorias, // Recebe as categorias como propriedade
+  hideCategorySelect
 }) => {
   const [nameItem, setNameItem] = useState(initialProduct ? initialProduct.name : "");
   const [tipo, setTipo] = useState(initialProduct ? initialProduct.tipo : "");
@@ -65,7 +68,12 @@ const FormProducts: React.FC<FormProductsProps> = ({
     event.preventDefault();
 
     // Verificar se todos os campos necessários estão preenchidos
-    if (!nameItem || !tipo || !category || !price) {
+    if (!nameItem || !tipo || !price) {
+      return;
+    }
+
+    // Verificar categoria SOMENTE se o usuário NÃO escondeu o select de categorias
+    if(!category && !hideCategorySelect){
       return;
     }
 
@@ -129,6 +137,8 @@ const FormProducts: React.FC<FormProductsProps> = ({
           </div>
         </div>
 
+      {/*Mostrar a select de categoria na tela somente quando a propriedade hideCategorySelect for false*/}
+      {!hideCategorySelect &&
         <div>
           <label htmlFor="select-categoria" className="block text-sm font-medium leading-6 text-gray-900">
             Categoria
@@ -152,6 +162,7 @@ const FormProducts: React.FC<FormProductsProps> = ({
             </select>
           </div>
         </div>
+        }
 
         <div>
           <label htmlFor="number" className="block text-sm font-medium leading-6 text-gray-900">

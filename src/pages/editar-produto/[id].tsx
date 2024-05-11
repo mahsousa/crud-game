@@ -98,7 +98,7 @@ const EditarProductsPage = () => {
         <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
           Editar Item da Loja
         </h2>
-        <FormProducts saveProducts={saveProducts} productID ={id} initialProduct={product} />
+        <FormProducts saveProducts={saveProducts} productID={id} initialProduct={product} categorias={[]} hideCategorySelect={false} />
 
         {/* Popup de sucesso */}
         {showSuccessPopup && (

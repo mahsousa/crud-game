@@ -66,7 +66,7 @@ const FormCategory: React.FC<FormCategoryProps> = ({ saveCategory, categoryID, i
           type="submit"
           className="w-full justify-center rounded-md bg-greenwhite-300 px-3 py-3 text-lg font-semibold leading-6 text-white shadow-sm"
         >
-          Cadastrar
+          Prosseguir
         </button>
       </form>
     </div>

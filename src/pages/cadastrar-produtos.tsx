@@ -83,7 +83,7 @@ export default function CadastrarProdutos() {
         <h2 className="text-start text-2xl font-bold leading-9 tracking-tight text-darkpurple-600">
           Cadastrar um item na Loja
         </h2>
-        <Form saveProducts={saveProducts} productID="0" initialProduct={null} categorias={categorias}/>
+        <Form saveProducts={saveProducts} productID="0" initialProduct={null} categorias={categorias} hideCategorySelect={false}/>
         
         {/* Popup de sucesso */}
         {showSuccessPopup && (

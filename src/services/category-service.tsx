@@ -1,7 +1,14 @@
 export interface Categoria {
   id: number;
   name: string;
-  items: Categoria[] | null;
+  items: Item[] | null;
+}
+
+export interface Item {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
 }
 
 class CategoriaService {

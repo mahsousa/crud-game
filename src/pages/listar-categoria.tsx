@@ -4,13 +4,7 @@ import Sidebar from "../components/Sidebar";
 import ListCategorias from "@/components/ListCategorias";
 import Navegation from "@/components/Navegation";
 import Search from "@/components/Search";
-import CategoriaService from "@/services/category-service";
-
-interface Categoria {
-  id: number;
-  name: string;
-  items: Categoria[] | null;
-}
+import CategoriaService, { Categoria } from "@/services/category-service";
 
 export default function ListarCategoria() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
